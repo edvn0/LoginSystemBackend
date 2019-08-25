@@ -4,11 +4,15 @@
 
     All routes here will be /api/{function}
 */
+import Database from '../database/database'
 import express from 'express';
 const Router = express.Router();
 
-Router.get('/get', (req, res) => {
-  res.send('Well hello from inside of the Router');
+const db = new Database();
+
+Router.get('/users', async (req, res) => {
+  const data = await db.getUsers();
+  res.json(data);
 })
 
 export default Router;

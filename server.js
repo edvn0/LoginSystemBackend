@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import database from './database/database';
 
 const port = 4201;
 const app = express();
