@@ -4,19 +4,19 @@ class User {
     this.password = password;
   }
 
-  getEmail() {
+  get email() {
     return this.email;
   }
 
-  getPassword() {
+  get password() {
     return this.password;
   }
 
-  setEmail(email) {
+  set email(email) {
     this.email = email;
   }
 
-  setPassword(password) {
+  set password(password) {
     this.password = password;
   }
 }

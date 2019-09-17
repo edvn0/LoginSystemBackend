@@ -2,6 +2,8 @@
 // must be listed before other Firebase SDKs
 import firebase from "firebase/app";
 import firebaseConfig from './db_config';
+import objectHash from 'object-hash';
+import faker from 'faker';
 
 import "firebase/auth";
 import "firebase/database"
@@ -33,15 +35,25 @@ class Database {
   async getUsers() {
     const snapshots = await this.database.collection('Users').get();
 
-    const documents = snapshots.docs.map(doc =>
-      doc.data()
-    );
+    const documents = snapshots.docs.map((doc) => {
+      const {
+        email,
+        password
+      } = doc.data();
+      const user = {
+        email: email,
+        password: objectHash({
+          password: password
+        })
+      };
+      return user;
+    });
 
     return documents;
   }
 
   /**
-   * Inserts a user into firestore, takes a User object and returns boolean if it was succesful or not.
+   * Inserts a user into firestore, takes a User object.
    * @param {User} user 
    */
   async insertUser(user) {
@@ -59,6 +71,20 @@ class Database {
     return id;
   }
 
+  async devInsert(amt) {
+    let inserts = [];
+    for (let i = 0; i < amt; i++) {
+      const insertObject = {
+        email: faker.internet.email(),
+        password: faker.internet.password()
+      }
+      await this.database.collection('Users').add(insertObject).then((val) => {
+        inserts.push(val.id);
+      });
+    }
+    return inserts;
+  }
 }
+
 
 export default Database;
