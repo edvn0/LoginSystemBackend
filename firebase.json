@@ -1,15 +1,6 @@
 {
-<<<<<<< HEAD
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
-=======
-  "database": {
-    "rules": "database.rules.json"
-  },
-  "hosting": {
-    "site": "edvn0-loginapp",
-    "public": "public"
->>>>>>> 3cf9834cf456c6020bcf43d6943cb4037725bc96
   }
 }
