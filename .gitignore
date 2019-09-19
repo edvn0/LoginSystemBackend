@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -64,3 +65,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+=======
+node_modules
+db_config.js
+>>>>>>> 3cf9834cf456c6020bcf43d6943cb4037725bc96

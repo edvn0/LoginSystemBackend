@@ -21,4 +21,8 @@ class User {
   }
 }
 
+<<<<<<< HEAD
 module.exports = User;
+=======
+export default User;
+>>>>>>> 3cf9834cf456c6020bcf43d6943cb4037725bc96
