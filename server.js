@@ -12,7 +12,8 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-const apiRoute = require('./routes/api.js');
+const apiRoute = require('./routes/apiRoute');
 app.use('/v1/api', apiRoute);
+
 
 module.exports = app;
