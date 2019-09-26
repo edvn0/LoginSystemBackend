@@ -23,6 +23,9 @@ const apiRoute = require('./routes/apiRoute');
 const usersRoute = require('./routes/usersRoute');
 app.use('/v1/api', apiRoute);
 app.use('/v1/api/users', usersRoute);
+app.get('/', (req, res) => {
+    res.sendFile('index.html');
+})
 
 const port = process.env.PORT || 4201;
 app.listen(port, (err) => {
