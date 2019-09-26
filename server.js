@@ -27,4 +27,6 @@ app.listen(process.env.PORT, () => {
     console.log(`Listening on ${process.env.PORT}!`);
 });
 
-module.exports =
+console.log(app);
+
+module.exports = app;
