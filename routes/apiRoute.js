@@ -1,10 +1,11 @@
 const Router = require('express').Router();
-const db = require('../database/database.js');
+const Database = require('../database/database.js');
 
-const dbService = new db();
+const dbService = new Database();
 
 Router.get('/', async (req, res) => {
-  res.send(await dbService.getUsers());
+  const users = await dbService.getUsers();
+  res.send(users);
 })
 
 module.exports = Router;

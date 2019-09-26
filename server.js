@@ -11,17 +11,18 @@ const origin = {
 
 const app = express();
 
-
+app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 if (prod) {
-    app.use(morgan('combined'));
     app.use(cors(origin));
 }
 
 const apiRoute = require('./routes/apiRoute');
-app.use('/v1/', apiRoute);
+const usersRoute = require('./routes/usersRoute');
+app.use('/v1/api', apiRoute);
+app.use('/v1/api/users', usersRoute);
 
 const port = process.env.PORT || 4201;
 app.listen(port, () => {
