@@ -23,10 +23,9 @@ if (prod) {
 const apiRoute = require('./routes/apiRoute');
 app.use('/v1/', apiRoute);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Listening on ${process.env.PORT}!`);
+const port = process.env.PORT || 4201;
+app.listen(port, () => {
+    console.log(`Listening on ${port}!`);
 });
-
-console.log(app);
 
 module.exports = app;
