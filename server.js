@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 require('dotenv').config();
 
 const prod = process.env.NODE_ENV === "production";
@@ -24,7 +25,7 @@ const usersRoute = require('./routes/usersRoute');
 app.use('/v1/api', apiRoute);
 app.use('/v1/api/users', usersRoute);
 app.get('/', (req, res) => {
-    res.sendFile('index.html');
+    res.sendFile(path.join(__dirname + '/index.html'));
 })
 
 const port = process.env.PORT || 4201;
