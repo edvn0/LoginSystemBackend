@@ -25,8 +25,10 @@ app.use('/v1/api', apiRoute);
 app.use('/v1/api/users', usersRoute);
 
 const port = process.env.PORT || 4201;
-app.listen(port, () => {
-    console.log(`Listening on ${port}!`);
+app.listen(port, (err) => {
+    if (err) {
+        console.error(err);
+    }
 });
 
 module.exports = app;
