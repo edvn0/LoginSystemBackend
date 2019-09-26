@@ -36,13 +36,10 @@ class Database {
         email,
         password
       } = doc.data();
-      const user = {
-        email: email,
-        password: objectHash({
-          password: password
-        })
+      return {
+        email,
+        password
       };
-      return user;
     });
 
     return documents;

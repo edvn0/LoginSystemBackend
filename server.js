@@ -13,7 +13,8 @@ app.use(bodyParser.urlencoded({
 }));
 
 const apiRoute = require('./routes/apiRoute');
-app.use('/v1/api', apiRoute);
+app.use('/v1/', apiRoute);
 
-
-module.exports = app;
+module.exports = {
+    nodeApp: app
+};
