@@ -15,6 +15,10 @@ app.use(bodyParser.urlencoded({
 const apiRoute = require('./routes/apiRoute');
 app.use('/v1/', apiRoute);
 
+app.listen(process.env.PORT, () => {
+    console.log(`Listening on ${process.env.PORT}!`);
+});
+
 module.exports = {
     nodeApp: app
 };
