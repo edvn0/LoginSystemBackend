@@ -29,10 +29,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/index.html'));
 })
 
-if (!prod) {
-    app.listen(process.env.PORT, () => {
-        console.log(`Listening to port: ${process.env.PORT}`);
-    })
-}
+
+app.listen(process.env.PORT || 42011, () => {
+    console.log(`Listening to port: ${process.env.PORT}`);
+})
 
 module.exports = app;
