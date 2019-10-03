@@ -35,4 +35,13 @@ app.listen(port, (err) => {
     }
 });
 
+if (prod) {
+    module.exports = app;
+} else {
+    app.listen(process.env.PORT, () => {
+        console.log(`Listening to port: ${process.env.PORT}`);
+
+    })
+}
+
 module.exports = app;

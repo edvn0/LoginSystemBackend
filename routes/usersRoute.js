@@ -1,18 +1,18 @@
 const Router = require('express').Router();
 
-Router.get('/users', (req, res) => {
+Router.get('/', (req, res) => {
     res.send("GET")
 });
 
-Router.post('/users', (req, res) => {
+Router.post('/', (req, res) => {
     res.send("POST")
 });
 
-Router.delete('/users', (req, res) => {
+Router.delete('/', (req, res) => {
     res.send("DELETE")
 });
 
-Router.put('/users', (req, res) => {
+Router.put('/', (req, res) => {
     res.send("PUT")
 });
 

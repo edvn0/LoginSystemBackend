@@ -9,12 +9,32 @@ require('firebase-admin');
 class Database {
 
   constructor() {
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig.firebaseConfig);
     this.database = firebase.firestore();
+    this.collectionPath = firebaseConfig.collectionPath;
   }
 
-  createUser(user) {
-    return new User(user.query.email, user.query.password);
+  /**
+   * Creates a new object from a Req object
+   * @param {Request} req Request object. 
+   */
+  createUser(req) {
+    const {
+      query,
+      params,
+      body
+    } = req;
+    let user;
+    if (query) {
+      user = new User(query.email, objectHash.sha1(query.password));
+    } else if (params) {
+      user = new User(params.email, objectHash.sha1(params.password));
+    } else if (body) {
+      user = new User(body.email, objectHash.sha1(body.password));
+    } else {
+      user = null;
+    }
+    return user;
   }
 
   getTempUser(user) {
@@ -29,7 +49,7 @@ class Database {
    * @returns {object[]} All users in tbe database
    */
   async getUsers() {
-    const snapshots = await this.database.collection('Users').get();
+    const snapshots = await this.database.collection(this.collectionPath).get();
 
     const documents = snapshots.docs.map((doc) => {
       const {
@@ -49,18 +69,18 @@ class Database {
    * Inserts a user into firestore, takes a User object.
    * @param {User} user 
    */
-  async insertUser(user) {
-    const tempUser = this.getTempUser(user);
-    const insertedRef = await this.database.collection('Users').add(tempUser);
+  async insertUser(req) {
+    const user = this.createUser(req);
+    const insertedRef = await this.database.collection(this.collectionPath).add(user);
     const inserted = await insertedRef.get();
     return {
       id: insertedRef.id,
-      data: inserted.data()
+      message: `Successfully inserted ${id} into Firebase.`
     };
   }
 
   async deleteUser(id) {
-    const deleted = await this.database.collection('Users').doc(id).delete();
+    const deleted = await this.database.collection(this.collectionPath).doc(id).delete();
     return id;
   }
 }

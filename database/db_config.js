@@ -8,4 +8,9 @@ const firebaseConfig = {
   appId: process.env.app,
 };
 
-module.exports = firebaseConfig;
+const collectionPath = process.env.collectionPath;
+
+module.exports = {
+  firebaseConfig,
+  collectionPath
+};
