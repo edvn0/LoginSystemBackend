@@ -12,12 +12,13 @@ const origin = {
 
 const app = express();
 
-app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 if (prod) {
     app.use(cors(origin));
+} else {
+    app.use(morgan('combined'));
 }
 
 const apiRoute = require('./routes/apiRoute');
@@ -28,19 +29,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/index.html'));
 })
 
-const port = process.env.PORT || 4201;
-app.listen(port, (err) => {
-    if (err) {
-        console.error(err);
-    }
-});
-
-if (prod) {
-    module.exports = app;
-} else {
+if (!prod) {
     app.listen(process.env.PORT, () => {
         console.log(`Listening to port: ${process.env.PORT}`);
-
     })
 }
 
