@@ -5,7 +5,10 @@ Router.get('/', (req, res) => {
 });
 
 Router.post('/', (req, res) => {
-    res.send("POST")
+    const {
+        body
+    } = req;
+    res.send(body);
 });
 
 Router.delete('/', (req, res) => {
