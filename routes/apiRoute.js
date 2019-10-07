@@ -1,12 +1,13 @@
-const Router = require('express').Router();
-const Database = require('../database/database.js');
+(function () {
+  const Router = require('express').Router();
+  const Database = require('../database/database.js');
 
-const dbService = new Database();
+  const dbService = new Database();
 
-// Change this?
-Router.get('/', async (req, res) => {
-  const users = await dbService.getUsers();
-  res.send(users);
-})
+  // Change this?
+  Router.get('/', async (req, res) => {
+    res.send(req.body.email);
+  })
 
-module.exports = Router;
+  module.exports = Router
+})();

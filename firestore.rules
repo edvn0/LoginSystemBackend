@@ -1,14 +1,8 @@
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
+    match /databases/{database}/documents {
+      match /{document=**} {
       allow read;
+      allow write;
     }
-    match /Users/{userId} {
-      allow write: if authenticated();
-    }
-  }
-
-  function authenticated() {
-    return request.auth != null;
   }
 }

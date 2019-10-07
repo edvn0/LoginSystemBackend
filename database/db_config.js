@@ -10,7 +10,10 @@ const firebaseConfig = {
 
 const collectionPath = process.env.collectionPath;
 
+const privateKey = process.env.privateKey;
+
 module.exports = {
   firebaseConfig,
-  collectionPath
+  collectionPath,
+  privateKey
 };

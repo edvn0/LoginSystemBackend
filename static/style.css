@@ -1,0 +1,30 @@
+* {
+    font-family: 'EB Garamond', serif;
+    font-size: 19px;
+}
+
+.wrapper {
+    max-width: 1920px;
+    width: 70%;
+    margin: auto;
+    padding: 50px;
+    align-self: center;
+    align-content: center;
+    align-items: center;
+}
+
+.wrapper h1 {
+    font-size: 35px;
+}
+
+.wrapper h2 {
+    font-size: 30px;
+}
+
+.wrapper h3 {
+    font-size: 25px;
+}
+
+.wrapper a {
+    font-size: 30px;
+}

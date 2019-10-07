@@ -1,87 +1,111 @@
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
-const firebase = require('firebase');
-const firebaseConfig = require('./db_config');
-const User = require('./models/User');
-const objectHash = require('object-hash');
-require('firebase-admin');
+(function () {
+  const firebase = require('firebase');
+  const config = require('./db_config');
+  const User = require('./models/User');
+  const bcrypt = require('bcrypt');
+  const _ = require('lodash');
+  const jwt = require('jsonwebtoken');
+  require('firebase-admin');
 
-class Database {
+  class Database {
 
-  constructor() {
-    firebase.initializeApp(firebaseConfig.firebaseConfig);
-    this.database = firebase.firestore();
-    this.collectionPath = firebaseConfig.collectionPath;
-  }
-
-  /**
-   * Creates a new object from a Req object
-   * @param {Request} req Request object. 
-   */
-  createUser(req) {
-    const {
-      query,
-      params,
-      body
-    } = req;
-    let user;
-    if (query) {
-      user = new User(query.email, objectHash.sha1(query.password));
-    } else if (params) {
-      user = new User(params.email, objectHash.sha1(params.password));
-    } else if (body) {
-      user = new User(body.email, objectHash.sha1(body.password));
-    } else {
-      user = null;
+    constructor() {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(config.firebaseConfig);
+      }
+      this.database = firebase.firestore();
+      this.collectionPath = config.collectionPath;
+      this.collectionSize = 400;
     }
-    return user;
-  }
 
-  getTempUser(user) {
-    return {
-      email: user.getEmail(),
-      password: user.getPassword()
-    };
-  }
+    /**
+     * Creates a new object from a Req object
+     * @param {Request} req Request object. 
+     */
+    createUser(email, password, date) {
 
-  /**
-   * Get all users from database!
-   * @returns {object[]} All users in tbe database
-   */
-  async getUsers() {
-    const snapshots = await this.database.collection(this.collectionPath).get();
+      return new User(email, password, date || Date.now());
+    }
 
-    const documents = snapshots.docs.map((doc) => {
-      const {
-        email,
-        password
-      } = doc.data();
+    getTempUser(user) {
       return {
-        email,
-        password
+        email: user.getEmail(),
+        password: user.getPassword()
       };
-    });
+    }
 
-    return documents;
-  }
+    /**
+     * Get all users from database!
+     * @returns {object[]} All users in tbe database
+     */
+    async getUsers() {
+      const snapshots = await this.database.collection(this.collectionPath).get();
 
-  /**
-   * Inserts a user into firestore, takes a User object.
-   * @param {User} user 
-   */
-  async insertUser(req) {
-    const user = this.createUser(req);
-    const insertedRef = await this.database.collection(this.collectionPath).add(user);
-    const inserted = await insertedRef.get();
-    return {
-      id: insertedRef.id,
-      message: `Successfully inserted ${id} into Firebase.`
-    };
-  }
+      const documents = snapshots.docs.map((doc) => {
+        const {
+          email,
+          password
+        } = doc.data();
+        return {
+          email,
+          password
+        };
+      });
+      this.collectionSize = documents.length;
+      return documents;
+    }
 
-  async deleteUser(id) {
-    const deleted = await this.database.collection(this.collectionPath).doc(id).delete();
-    return id;
+    async getUserById(id) {
+
+    }
+
+    async getUsersWithLimit(limit) {
+      const snapshots = await this.getUsers();
+      const docs = _.takeRight(snapshots, limit);
+      return docs;
+    }
+
+    /**
+     * Inserts a user into firestore, takes email, password.
+     */
+    async insertUser(email, password) {
+      const saltRounds = 10;
+
+      const hashedPassword = await new Promise((resolve, reject) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+          if (err) reject(err)
+          resolve(hash)
+        });
+      });
+      // Add user
+      const user = this.createUser(email, hashedPassword);
+      const userToInsert = JSON.parse(JSON.stringify(user));
+      const ref = this.database.collection(this.collectionPath);
+      const added = await ref.add(userToInsert);
+
+      // register webToken
+      const token = jwt.sign({
+        id: added.id
+      }, config.privateKey, {
+        expiresIn: 3600
+      });
+      return {
+        id: added.id,
+        auth: true,
+        token
+      };
+    }
+
+    async deleteUser(id) {
+      const deleted = await this.database.collection(this.collectionPath).doc(id).delete();
+      return id;
+    }
+
+    getPrivateKey() {
+      return config.privateKey;
+    }
   }
-}
-module.exports = Database;
+  module.exports = Database;
+})();
