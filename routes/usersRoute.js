@@ -13,31 +13,17 @@
 
     const service = new Database();
 
-    Router.get('/', [check('x-access-token').exists()], async (req, res) => {
-
-
-        const token = req.headers['x-access-token'];
-
-        jwt.verify(token, service.getPrivateKey(), async (err, decoded) => {
-            if (err) {
-                res.status(500);
-                res.send({
-                    auth: false,
-                    message: "Failed to authenticate token."
-                });
-            } else {
-                const users = await service.getUsers();
-                res.send({
-                    users,
-                    decoded
-                });
-            }
-
+    Router.get('/', checkToken, async (req, res) => {
+        const users = await service.getUsers();
+        res.send({
+            users
         });
     });
 
-    Router.get('/id/:id', [check('x-access-token').exists()], async (req, res) => {
-        const token = req.headers['x-access-token'];
+    Router.get('/id/:id', checkToken, async (req, res) => {
+        const {
+            id
+        } = req.params;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.status(401);
@@ -45,9 +31,23 @@
                 errors: errors.array()
             });
         }
-        res.send({
-            id
-        });
+
+        const user = await service.getUserById(id);
+        const readUser = {
+            ...user,
+            _readAt: new Date(Date.now()).toLocaleString()
+        };
+        if (user) {
+            res.send({
+                success: true,
+                user: readUser
+            });
+        } else {
+            res.send({
+                success: false,
+                message: "User is not in the database."
+            })
+        }
     });
 
     Router.get('/limit/:limit', [

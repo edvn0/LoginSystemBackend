@@ -40,6 +40,13 @@
                 });
             }
         }
+
+        Router.get('/', checkToken, (req, res) => {
+            res.send({
+                success: false,
+                message: "Login first!"
+            })
+        });
     });
 
     module.exports = Router;

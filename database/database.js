@@ -35,12 +35,11 @@
 
     /**
      * Get all users from database!
-     * @returns {object[]} All users in tbe database
+     * @returns {User[]} All users in tbe database
      */
     async getUsers() {
-      const snapshots = await this.database.collection(this.collectionPath).get();
-
-      const documents = snapshots.docs.map((doc) => {
+      const snapshot = await this.database.collection(this.collectionPath).get();
+      const users = snapshot.docs.map(doc => {
         const {
           _email,
           _password,
@@ -56,8 +55,7 @@
           _readAt: new Date(Date.now()).toLocaleString()
         };
       });
-      this.collectionSize = documents.length;
-      return documents;
+      return users;
     }
 
     async getUserById(id) {
