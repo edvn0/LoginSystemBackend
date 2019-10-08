@@ -4,6 +4,9 @@
         check,
         validationResult
     } = require('express-validator');
+    const {
+        checkToken
+    } = require('../database/middlewares/jwtVerify');
 
     const Database = require('../database/database');
     const service = new Database();
