@@ -11,32 +11,37 @@
 </head>
 
 <body>
+    <ul class="navbar">
+        <li><a href="">About</a></li>
+        <li><a href="">Contact</a></li>
+        <li id="lastli"><a id="lasta" href="">Login</a></li>
+    </ul>
     <div class="wrapper">
         <h1>
             EOApi, Edwin's Open API.
         </h1>
         <h2>
-            Check our API out. Visit <a href="/v1/api/">/v1/api/</a>!
+            Check our API out. Visit <a href="/api/v1/">/v1/api/</a>!
         </h2>
         <h3>Following endpoints are public...</h3>
         <ul class="ul-base">
             <li class="li-base">
-                /users
+                <a href="/api/v1/users">/users</a>
                 <ul class="ul-nested">
                     <li class="li-nested">Get: Gets users</li>
-                    <li class="li-nested"> Post: Add new user </li>
+                    <li class="li-nested">Post: Add new user </li>
                     <li class="li-nested">Put: Update user</li>
                     <li class="li-nested">Delete: Delete user</li>
                 </ul>
             </li>
             <li class="li-base">
-                /whatever
+                <a href="/api/v1/login">/login</a>
                 <ul>
                     <li class="li-nested">
-                        One: whatever One.
+                        Get: login with Google Auth
                     </li>
                     <li class="li-nested">
-                        Two: whatever Two.
+                        Post: Register to my API.
                     </li>
                 </ul>
             </li>

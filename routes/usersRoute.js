@@ -7,15 +7,36 @@
         param
     } = require('express-validator');
     const jwt = require('jsonwebtoken');
+    const {
+        checkToken
+    } = require('../database/middlewares/jwtVerify');
 
     const service = new Database();
 
-    Router.get('/', async (req, res) => {
-        const users = await service.getUsers();
-        res.send(users);
+    Router.get('/', [check('x-access-token').exists()], async (req, res) => {
+
+
+        const token = req.headers['x-access-token'];
+
+        jwt.verify(token, service.getPrivateKey(), async (err, decoded) => {
+            if (err) {
+                res.status(500);
+                res.send({
+                    auth: false,
+                    message: "Failed to authenticate token."
+                });
+            } else {
+                const users = await service.getUsers();
+                res.send({
+                    users,
+                    decoded
+                });
+            }
+
+        });
     });
 
-    Router.get('/:id', [check('x-access-token').exists()], async (req, res) => {
+    Router.get('/id/:id', [check('x-access-token').exists()], async (req, res) => {
         const token = req.headers['x-access-token'];
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -24,33 +45,17 @@
                 errors: errors.array()
             });
         }
-
-        jwt.verify(token, service.getPrivateKey(), (err, decoded) => {
-            if (err) {
-                res.status(500);
-                res.send({
-                    auth: false,
-                    message: "Failed to authenticate token."
-                });
-            }
-
-            res.status(200);
-
-            const user = service.getUserById(req.params.id);
-
-            res.send({
-                user,
-                decoded
-            });
-        })
+        res.send({
+            id
+        });
     });
 
-    Router.get('/:limit', [
+    Router.get('/limit/:limit', [
         param('limit').exists().bail().isLength({
             min: 1,
             max: 30
         })
-    ], async (req, res) => {
+    ], checkToken, async (req, res) => {
         const {
             limit
         } = req.params;
@@ -64,37 +69,6 @@
         } else {
             const users = await service.getUsersWithLimit(limit);
             res.send(users);
-        }
-    });
-
-    Router.post('/', [
-        check('email').normalizeEmail().isEmail(),
-        check('password').isLength({
-            min: 5,
-            max: 70
-        })
-    ], async (req, res) => {
-        const {
-            email,
-            password
-        } = req.body;
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(422);
-            res.json({
-                errors: errors.array()
-            });
-        } else {
-            const id = await service.insertUser(email, password);
-            if (id === -1) {
-                res.status(503)
-                res.json({
-                    message: "Failure on the backend"
-                })
-            } else {
-                res.status(200)
-                res.json(id);
-            }
         }
     });
 

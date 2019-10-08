@@ -12,8 +12,11 @@ const collectionPath = process.env.collectionPath;
 
 const privateKey = process.env.privateKey;
 
+const googleApiKey = process.env.googleApiKey;
+
 module.exports = {
   firebaseConfig,
   collectionPath,
-  privateKey
+  privateKey,
+  googleApiKey
 };

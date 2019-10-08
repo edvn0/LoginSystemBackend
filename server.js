@@ -4,7 +4,6 @@
     const cors = require('cors');
     const bodyParser = require('body-parser');
     const path = require('path');
-    const faker = require('faker');
     require('dotenv').config();
 
     const prod = process.env.NODE_ENV === "production";
@@ -24,10 +23,12 @@
         app.use(morgan('combined'));
     }
 
-    const apiRoute = require('./routes/apiRoute');
+    const loginRoute = require('./routes/loginRoute');
+    const registerRoute = require('./routes/registerRoute');
     const usersRoute = require('./routes/usersRoute');
-    app.use('/v1/api', apiRoute);
-    app.use('/v1/api/users', usersRoute);
+    app.use('/api/v1/users', usersRoute);
+    app.use('/api/v1/register', registerRoute);
+    app.use('/api/v1/login', loginRoute);
     app.use(express.static(path.join(__dirname, "static")));
 
 

@@ -17,15 +17,12 @@
       }
       this.database = firebase.firestore();
       this.collectionPath = config.collectionPath;
-      this.collectionSize = 400;
     }
 
     /**
      * Creates a new object from a Req object
-     * @param {Request} req Request object. 
      */
     createUser(email, password, date) {
-
       return new User(email, password, date || Date.now());
     }
 
@@ -45,12 +42,18 @@
 
       const documents = snapshots.docs.map((doc) => {
         const {
-          email,
-          password
+          _email,
+          _password,
+          _insertedDate
         } = doc.data();
+
+        const _insertedAt = new Date(_insertedDate).toLocaleString();
+
         return {
-          email,
-          password
+          _email,
+          _password,
+          _insertedAt,
+          _readAt: new Date(Date.now()).toLocaleString()
         };
       });
       this.collectionSize = documents.length;
@@ -58,7 +61,9 @@
     }
 
     async getUserById(id) {
-
+      const ref = this.database.collection(this.collectionPath).doc(id);
+      const user = await ref.get();
+      return user.data();
     }
 
     async getUsersWithLimit(limit) {
@@ -67,35 +72,34 @@
       return docs;
     }
 
+    async getUser(email, password) {
+
+      const users = await this.getUsers();
+
+      for (let user of users) {
+        const hashedPassword = await bcrypt.compare(password, user._password);
+        if (user._email === email && hashedPassword) {
+          return user;
+        }
+      }
+
+      return null;
+    }
+
     /**
      * Inserts a user into firestore, takes email, password.
      */
     async insertUser(email, password) {
-      const saltRounds = 10;
 
-      const hashedPassword = await new Promise((resolve, reject) => {
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-          if (err) reject(err)
-          resolve(hash)
-        });
-      });
+      const hashedPassword = await this.hashPassword(password);
       // Add user
       const user = this.createUser(email, hashedPassword);
-      const userToInsert = JSON.parse(JSON.stringify(user));
       const ref = this.database.collection(this.collectionPath);
-      const added = await ref.add(userToInsert);
-
-      // register webToken
-      const token = jwt.sign({
-        id: added.id
-      }, config.privateKey, {
-        expiresIn: 3600
+      const added = await ref.add({
+        ...user
       });
-      return {
-        id: added.id,
-        auth: true,
-        token
-      };
+
+      return added.id;
     }
 
     async deleteUser(id) {
@@ -103,8 +107,15 @@
       return id;
     }
 
-    getPrivateKey() {
-      return config.privateKey;
+    async hashPassword(password) {
+      const saltRounds = 10;
+      const hashedPassword = await new Promise((resolve, reject) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+          if (err) reject(err)
+          resolve(hash)
+        });
+      });
+      return hashedPassword;
     }
   }
   module.exports = Database;

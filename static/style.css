@@ -1,16 +1,36 @@
 * {
+    margin: 0px;
     font-family: 'EB Garamond', serif;
     font-size: 19px;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("./77835.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 800px;
+    background-repeat: no-repeat;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 .wrapper {
     max-width: 1920px;
-    width: 70%;
+    width: 500px;
+    height: 500px;
     margin: auto;
-    padding: 50px;
-    align-self: center;
-    align-content: center;
-    align-items: center;
+    margin-top: 30px;
+    padding: 30px;
+
+    transform: translateX(-30%);
+
+    background-color: cornsilk;
+    border: 10px solid cornsilk;
+    border-radius: 20px;
 }
 
 .wrapper h1 {
@@ -27,4 +47,37 @@
 
 .wrapper a {
     font-size: 30px;
+}
+
+.wrapper ul li a {
+    font-size: 19px;
+}
+
+.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: cornsilk;
+}
+
+.navbar li {
+    float: left;
+}
+
+.navbar li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 15px 19px;
+    text-decoration: none;
+}
+
+.navbar li a:hover {
+    background-color: rgb(69, 90, 100);
+}
+
+#lastli {
+    background: rgb(85, 107, 47);
+    float: right;
 }
