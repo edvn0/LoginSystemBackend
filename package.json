@@ -31,7 +31,18 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-google": "^0.14.0",
     "faker": "^4.1.0",
     "nodemon": "^1.19.2"
+  },
+  "eslintConfig": {
+    "extends": "google",
+    "parserOptions": {
+      "ecmaVersion": 2017
+    },
+    "env": {
+      "es6": true
+    }
   }
 }

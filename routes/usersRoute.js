@@ -1,18 +1,17 @@
+const Router = require('express').Router();
+const Database = require('../database/database');
+const {
+    check,
+    validationResult,
+    param
+} = require('express-validator');
+const {
+    checkToken
+} = require('../database/middlewares/jwtVerify');
+
+const service = new Database();
+
 (function () {
-    const Router = require('express').Router();
-    const Database = require('../database/database');
-    const {
-        check,
-        validationResult,
-        param
-    } = require('express-validator');
-    const jwt = require('jsonwebtoken');
-    const {
-        checkToken
-    } = require('../database/middlewares/jwtVerify');
-
-    const service = new Database();
-
     Router.get('/', checkToken, async (req, res) => {
         const users = await service.getUsers();
         res.send({
@@ -37,21 +36,18 @@
             ...user,
             _readAt: new Date(Date.now()).toLocaleString()
         };
-        if (user) {
-            res.send({
-                success: true,
-                user: readUser
-            });
-        } else {
-            res.send({
-                success: false,
-                message: "User is not in the database."
-            })
-        }
+
+        res.send(user ? {
+            success: true,
+            user: readUser
+        } : {
+            success: false,
+            message: "User is not in the database."
+        });
     });
 
     Router.get('/limit/:limit', [
-        param('limit').exists().bail().isLength({
+        check('limit').exists().bail().isLength({
             min: 1,
             max: 30
         })
